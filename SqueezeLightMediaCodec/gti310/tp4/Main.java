@@ -54,8 +54,6 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Squeeze Light Media Codec !");
-	
-		PPMReaderWriter ppm = new PPMReaderWriter();
 		
 		// TODO : try catch
 		if (args.length == 3) {
@@ -65,12 +63,22 @@ public class Main {
 			String compressFileName = args[1].trim();
 			int facteurQualite = Integer.parseInt(args[2].trim());
 			
-			int[][][] rgb = ppm.readPPMFile(fileToEncode);
+			int[][][] rgb = PPMReaderWriter.readPPMFile(fileToEncode);
 			
 			// Conversion RGB à YCbCr
 			int[][][] YCbCr = convertColorSpace.convertRGBtoYCbCr(rgb);
 			
 			// DCT
+			// Obtenir les blocs 8x8
+			int[][][][] blocs = ImgPartition.partitionImage(YCbCr);
+			//DCT.applyDCT(bloc, facteurQualite);
+			
+			// test blocks render
+			for (int i = 0; i < blocs.length; ++i) {
+				int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(blocs[i]);
+				PPMReaderWriter.writePPMFile("lena_part" + i + ".ppm", rgbFromYCBCr);
+			}
+			
 			
 			// Quantification 
 			
@@ -83,9 +91,8 @@ public class Main {
 			// Codage entropique
 
 
-			// test
-			int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(YCbCr);
-			//ppm.writePPMFile("lena2.ppm", rgbFromYCBCr);
+			
+			
 
 			System.out.println("Encoding completed...");
 			
