@@ -68,16 +68,26 @@ public class Main {
 			// Conversion RGB à YCbCr
 			int[][][] YCbCr = convertColorSpace.convertRGBtoYCbCr(rgb);
 			
+			// TODO conserver attributs hauteur , largeur a un endroit accessible, on y accede assez souvent a cette info.
+			int height = YCbCr[Main.Y].length;
+			int width = YCbCr[Main.Y][0].length;
+			
 			// DCT
 			// Obtenir les blocs 8x8
 			int[][][][] blocs = ImgPartition.partitionImage(YCbCr);
+			int[][][] YCbCr2 = ImgPartition.mergeImageFromBlocs(blocs, height, width);
 			//DCT.applyDCT(bloc, facteurQualite);
 			
 			// test blocks render
+			/*
 			for (int i = 0; i < blocs.length; ++i) {
 				int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(blocs[i]);
 				PPMReaderWriter.writePPMFile("lena_part" + i + ".ppm", rgbFromYCBCr);
 			}
+			*/
+			
+			int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(YCbCr2);
+			PPMReaderWriter.writePPMFile("lena_merge.ppm", rgbFromYCBCr);
 			
 			
 			// Quantification 
