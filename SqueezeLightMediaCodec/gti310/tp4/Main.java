@@ -75,19 +75,104 @@ public class Main {
 			// DCT
 			// Obtenir les blocs 8x8
 			int[][][][] blocs = ImgPartition.partitionImage(YCbCr);
-			int[][][] YCbCr2 = ImgPartition.mergeImageFromBlocs(blocs, height, width);
-			//DCT.applyDCT(bloc, facteurQualite);
+			
+			 //* @param facteurQualite  0 à 100 de la plus basse qualité (0) à qualité sans perte (100).
 			
 			// test blocks render
+			int[][] bloc = new int[8][8];
+			bloc[0][0] = 200;
+			bloc[0][1] = 202;
+			bloc[0][2] = 189;
+			bloc[0][3] = 188;
+			bloc[0][4] = 189;
+			bloc[0][5] = 175;
+			bloc[0][6] = 175;
+			bloc[0][7] = 175;
+
+			bloc[1][0] = 200;
+			bloc[1][1] = 203;
+			bloc[1][2] = 198;
+			bloc[1][3] = 188;
+			bloc[1][4] = 189;
+			bloc[1][5] = 182;
+			bloc[1][6] = 178;
+			bloc[1][7] = 175;
+			
+			bloc[2][0] = 203;
+			bloc[2][1] = 200;
+			bloc[2][2] = 200;
+			bloc[2][3] = 195;
+			bloc[2][4] = 200;
+			bloc[2][5] = 187;
+			bloc[2][6] = 185;
+			bloc[2][7] = 175;
+
+			bloc[3][0] = 200;
+			bloc[3][1] = 200;
+			bloc[3][2] = 200;
+			bloc[3][3] = 200;
+			bloc[3][4] = 197;
+			bloc[3][5] = 187;
+			bloc[3][6] = 187;
+			bloc[3][7] = 187;
+
+			bloc[4][0] = 200;
+			bloc[4][1] = 205;
+			bloc[4][2] = 200;
+			bloc[4][3] = 200;
+			bloc[4][4] = 195;
+			bloc[4][5] = 188;
+			bloc[4][6] = 187;
+			bloc[4][7] = 175;
+
+			bloc[5][0] = 200;
+			bloc[5][1] = 200;
+			bloc[5][2] = 200;
+			bloc[5][3] = 200;
+			bloc[5][4] = 200;
+			bloc[5][5] = 190;
+			bloc[5][6] = 187;
+			bloc[5][7] = 175;
+
+			bloc[6][0] = 205;
+			bloc[6][1] = 200;
+			bloc[6][2] = 199;
+			bloc[6][3] = 200;
+			bloc[6][4] = 191;
+			bloc[6][5] = 187;
+			bloc[6][6] = 187;
+			bloc[6][7] = 175;
+
+			bloc[7][0] = 210;
+			bloc[7][1] = 200;	
+			bloc[7][2] = 200;
+			bloc[7][3] = 200;
+			bloc[7][4] = 188;
+			bloc[7][5] = 185;
+			bloc[7][6] = 187;
+			bloc[7][7] = 186;
+
+			for (int i = 0; i < blocs[0][Main.Y].length; ++i )
+				for (int j = 0; j < blocs[0][Main.Y][0].length; ++j ) 
+					blocs[0][Main.Y][i][j] = bloc[i][j];
+
+		int[][][][] blocsDCT = DCT.applyDCT(blocs);
+			
+		int[][][][] blocsConvertFromDCT = DCT.inverseDCT(blocsDCT);
+		
+		String s = "sssss";
+		
 			/*
 			for (int i = 0; i < blocs.length; ++i) {
 				int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(blocs[i]);
 				PPMReaderWriter.writePPMFile("lena_part" + i + ".ppm", rgbFromYCBCr);
 			}
 			*/
-			
-			int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(YCbCr2);
-			PPMReaderWriter.writePPMFile("lena_merge.ppm", rgbFromYCBCr);
+
+			// test new create image from blocks
+			//int[][][] YCbCr2 = ImgPartition.mergeImageFromBlocs(blocs, height, width);
+			//int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(YCbCr2);
+			//PPMReaderWriter.writePPMFile("lena_merge.ppm", rgbFromYCBCr);
 			
 			
 			// Quantification 
