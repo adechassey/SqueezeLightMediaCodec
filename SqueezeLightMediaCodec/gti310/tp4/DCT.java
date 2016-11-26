@@ -50,6 +50,7 @@ public class DCT {
 		return resultat;
 	}
 	
+	// TODO function au niveu de 1 bloc seulement , voir si c'est mieux.
 	public static int[][][][] inverseDCT(int[][][][] blocs) { 
 		int nbBlocs = blocs.length;
 		int height = blocs[0][Main.Y].length;

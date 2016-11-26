@@ -157,7 +157,12 @@ public class Main {
 					blocs[0][Main.Y][i][j] = bloc[i][j];
 
 		int[][][][] blocsDCT = DCT.applyDCT(blocs);
-			
+	    
+		int[][][][] quantified = Quantification.applyQuantification(blocsDCT, facteurQualite);
+		
+		int[][][][] dequantified = Quantification.dequantification(quantified, facteurQualite);
+		
+		
 		int[][][][] blocsConvertFromDCT = DCT.inverseDCT(blocsDCT);
 		
 		String s = "sssss";
