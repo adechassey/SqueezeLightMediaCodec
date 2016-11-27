@@ -50,7 +50,7 @@ public class ZigZag {
 	}
 	
 	/***
-	 * 
+	 * d
 	 * @param vecteur
 	 * @return
 	 * O(N)

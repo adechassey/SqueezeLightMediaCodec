@@ -167,6 +167,7 @@ public class Main {
 			zigzag[i][Main.Cr] = ZigZag.doZipZag(quantified[0][Main.Cr]);
 		}
 		
+		// TODO : Traitement des coefficients DC
 		
 		int[][][][] deZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE][Main.BLOCK_SIZE]; 
 		for (int i = 0; i < zigzag.length; i++) {
