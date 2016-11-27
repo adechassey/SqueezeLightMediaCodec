@@ -160,10 +160,26 @@ public class Main {
 	    
 		int[][][][] quantified = Quantification.applyQuantification(blocsDCT, facteurQualite);
 		
+		int[][][] zigzag = new int[quantified.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE * Main.BLOCK_SIZE]; 
+		for (int i = 0; i < quantified.length; i++) {
+			zigzag[i][Main.Y] = ZigZag.doZipZag(quantified[0][Main.Y]);
+			zigzag[i][Main.Cb] = ZigZag.doZipZag(quantified[0][Main.Cb]);
+			zigzag[i][Main.Cr] = ZigZag.doZipZag(quantified[0][Main.Cr]);
+		}
+		
+		
+		int[][][][] deZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE][Main.BLOCK_SIZE]; 
+		for (int i = 0; i < zigzag.length; i++) {
+			deZigzag[i][Main.Y] =  ZigZag.inverseZipZag(zigzag[i][Main.Y]);
+			deZigzag[i][Main.Cb] = ZigZag.inverseZipZag(zigzag[i][Main.Cb]);
+			deZigzag[i][Main.Cr] = ZigZag.inverseZipZag(zigzag[i][Main.Cr]);
+		}
+		
+		int[][] deZigZag = ZigZag.inverseZipZag(zigzag);
+		
 		int[][][][] dequantified = Quantification.dequantification(quantified, facteurQualite);
 		
-		
-		int[][][][] blocsConvertFromDCT = DCT.inverseDCT(blocsDCT);
+		int[][][][] blocsConvertFromDCT = DCT.inverseDCT(dequantified);
 		
 		String s = "sssss";
 		
