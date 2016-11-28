@@ -31,7 +31,7 @@ public class convertColorSpace {
 				R = rgb[Main.R][i][j];
 				G = rgb[Main.G][i][j];
 				B = rgb[Main.B][i][j];
-				
+
 				YCbCr[Main.Y][i][j]  = (int) Math.min(Math.max(0, Math.round(0.299 * R + 0.587 * G + 0.114 * B)), 255);
 				YCbCr[Main.Cb][i][j] = (int) Math.min(Math.max(0, Math.round(-0.1687 * R + (-0.3313 * G) + 0.5 * B + 128 )), 255);
 				YCbCr[Main.Cr][i][j] = (int) Math.min(Math.max(0, Math.round(0.5 * R + (-0.4187 * G) + (-0.0813 * B + 128) )), 255);

@@ -13,6 +13,7 @@ public class ImgPartition {
 	 * O(N^3)
 	 */
 	public static int[][][][] partitionImage(int[][][] YCbCr) {
+		// TODO centralise ces info, utilise dans reverse.
 		int height = YCbCr[Main.Y].length;
 		int width = YCbCr[Main.Y][0].length;
 		int nbBlocParLignes = width / Main.BLOCK_SIZE;

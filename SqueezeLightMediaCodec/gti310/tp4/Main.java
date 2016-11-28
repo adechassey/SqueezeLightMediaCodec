@@ -76,10 +76,20 @@ public class Main {
 			// Obtenir les blocs 8x8
 			int[][][][] blocs = ImgPartition.partitionImage(YCbCr);
 			
+			/* modification pour la conservation des tons de gris seulement.
+			for (int i = 0; i < blocs.length; i++) {
+				for (int u = 0; u < blocs[i][Main.Cb].length; u++) {
+					for (int v = 0; v < blocs[i][Main.Cb][0].length; v++) {
+						blocs[i][Main.Cb][u][v] = 128;
+						blocs[i][Main.Cr][u][v] = 128;
+					}
+				}
+			}*/
+			
 			 //* @param facteurQualite  0 à 100 de la plus basse qualité (0) à qualité sans perte (100).
 			
 			// test blocks render
-			int[][] bloc = new int[8][8];
+			/*int[][] bloc = new int[8][8];
 			bloc[0][0] = 200;
 			bloc[0][1] = 202;
 			bloc[0][2] = 189;
@@ -155,57 +165,76 @@ public class Main {
 			for (int i = 0; i < blocs[0][Main.Y].length; ++i )
 				for (int j = 0; j < blocs[0][Main.Y][0].length; ++j ) 
 					blocs[0][Main.Y][i][j] = bloc[i][j];
+		*/
 
-		int[][][][] blocsDCT = DCT.applyDCT(blocs);
-	    
-		int[][][][] quantified = Quantification.applyQuantification(blocsDCT, facteurQualite);
-		
-		int[][][] zigzag = new int[quantified.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE * Main.BLOCK_SIZE]; 
-		for (int i = 0; i < quantified.length; i++) {
-			zigzag[i][Main.Y] = ZigZag.doZipZag(quantified[0][Main.Y]);
-			zigzag[i][Main.Cb] = ZigZag.doZipZag(quantified[0][Main.Cb]);
-			zigzag[i][Main.Cr] = ZigZag.doZipZag(quantified[0][Main.Cr]);
-		}
-		
-		// TODO : Traitement des coefficients DC
-		
-		int[][][][] deZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE][Main.BLOCK_SIZE]; 
-		for (int i = 0; i < zigzag.length; i++) {
-			deZigzag[i][Main.Y] =  ZigZag.inverseZipZag(zigzag[i][Main.Y]);
-			deZigzag[i][Main.Cb] = ZigZag.inverseZipZag(zigzag[i][Main.Cb]);
-			deZigzag[i][Main.Cr] = ZigZag.inverseZipZag(zigzag[i][Main.Cr]);
-		}
-		
-		int[][] deZigZag = ZigZag.inverseZipZag(zigzag);
-		
-		int[][][][] dequantified = Quantification.dequantification(quantified, facteurQualite);
-		
-		int[][][][] blocsConvertFromDCT = DCT.inverseDCT(dequantified);
-		
-		String s = "sssss";
-		
-			/*
-			for (int i = 0; i < blocs.length; ++i) {
-				int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(blocs[i]);
-				PPMReaderWriter.writePPMFile("lena_part" + i + ".ppm", rgbFromYCBCr);
+			int[][][][] blocsDCT = DCT.applyDCT(blocs);
+		    
+			int[][][][] quantified = Quantification.applyQuantification(blocsDCT, facteurQualite);
+			
+			int[][][] zigzag = new int[quantified.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE * Main.BLOCK_SIZE]; 
+			for (int i = 0; i < quantified.length; i++) {
+				zigzag[i][Main.Y] = ZigZag.doZipZag(quantified[i][Main.Y]);
+				zigzag[i][Main.Cb] = ZigZag.doZipZag(quantified[i][Main.Cb]);
+				zigzag[i][Main.Cr] = ZigZag.doZipZag(quantified[i][Main.Cr]);
 			}
-			*/
+			
+			// Prepare stream for DPCM, RLC operation 
+			Entropy.loadBitstream(Entropy.getBitstream());
+			
+			// DC
+			DPCM.applyDPCM(zigzag);
+	
+			// AC
+			RLC.applyRLC(zigzag);
 
-			// test new create image from blocks
-			//int[][][] YCbCr2 = ImgPartition.mergeImageFromBlocs(blocs, height, width);
-			//int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(YCbCr2);
-			//PPMReaderWriter.writePPMFile("lena_merge.ppm", rgbFromYCBCr);
+			// Write to output file.
+			SZLReaderWriter.writeSZLFile(compressFileName, height, width, facteurQualite);
+			
+			// END 
+	
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			
+			// Decompress operation START
+			int[] szlBitStream = SZLReaderWriter.readSZLFile(compressFileName);
+			height = szlBitStream[0];
+			width = szlBitStream[1];
+			int colorSpace = szlBitStream[2];
+			int qualityFactor = szlBitStream[3];
+		
+			// TODO Validation des infos.
+		
+			// iDC		
+			int[][][] toZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE * Main.BLOCK_SIZE];
+			DPCM.inverseDPCM(toZigzag);
+			
+			// iAC
+			RLC.inverseRLC(toZigzag);
+			
+			// iZigzag
+			int[][][][] deZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE][Main.BLOCK_SIZE]; 
+			for (int i = 0; i < zigzag.length; i++) {
+				deZigzag[i][Main.Y] =  ZigZag.inverseZipZag(zigzag[i][Main.Y]);
+				deZigzag[i][Main.Cb] = ZigZag.inverseZipZag(zigzag[i][Main.Cb]);
+				deZigzag[i][Main.Cr] = ZigZag.inverseZipZag(zigzag[i][Main.Cr]);
+			}
+		
+			// Dequantification
+			int[][][][] dequantified = Quantification.dequantification(quantified, facteurQualite);
+			
+			// iDCT
+			int[][][][] blocsConvertFromDCT = DCT.inverseDCT(dequantified);
+			
+			// Reconstruire image entiere a partir des blocs
+			int[][][] blocsV2 = ImgPartition.mergeImageFromBlocs(blocsConvertFromDCT, height, width);
+	
+			// Conversion YCbCr à RBG
+			int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(blocsV2);
+				
+			// TODO output println des etapes "completed"... 	
+			PPMReaderWriter.writePPMFile(compressFileName + facteurQualite + ".ppm", rgbFromYCBCr);
 			
 			
-			// Quantification 
-			
-			// ZigZag
-			
-			// DPCM sur le DC (premier)
-			
-			// RLC sur les AC (le reste)
-			
-			// Codage entropique
 
 
 			
