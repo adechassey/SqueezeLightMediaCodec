@@ -1,5 +1,10 @@
 package gti310.tp4;
 
+/***
+ * 
+ * @author nero_
+ *
+ */
 public class Quantification {
 	public static final int[][] TABLE_QY = {
 			{ 16, 11, 10, 16,  24,  40,  51,  61 },
@@ -28,30 +33,10 @@ public class Quantification {
 	 * @param blocs
 	 * @param facteurQualite
 	 * @return
-	 * O(N^3)
+	 * O(N^3) via doTreatment
 	 */
 	public static int[][][][] applyQuantification(int [][][][] blocs, int facteurQualite) {
-		// Si facteur de qualite == 100 on passe .
-		if (facteurQualite == 100) return blocs;
-		
-		int nbBlocs = blocs.length;
-		int height = blocs[0][Main.Y].length;
-		int width = blocs[0][Main.Y][0].length;
-		int[][][][] resultat = new int[nbBlocs][Main.COLOR_SPACE_SIZE][height][width];
-
-		for (int indexBloc = 0; indexBloc < nbBlocs; ++indexBloc) {
-			for (int u = 0; u < height; ++u) {
-				for (int v = 0; v < width; ++v) {
-					// TODO one function instead of 3 lines
-					double alpha = getAlphaValue(facteurQualite);
-					resultat[indexBloc][Main.Y][u][v]  = (int) Math.round(blocs[indexBloc][Main.Y][u][v] / (alpha * TABLE_QY[u][v]));
-					resultat[indexBloc][Main.Cb][u][v] = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] / (alpha * TABLE_QCbCr[u][v]));
-					resultat[indexBloc][Main.Cr][u][v] = (int) Math.round(blocs[indexBloc][Main.Cr][u][v] / (alpha * TABLE_QCbCr[u][v]));
-				}
-			}
-		}
-		
-		return resultat;
+		return doTreatment(blocs, facteurQualite, false);
 	}
 
 	/***
@@ -59,30 +44,56 @@ public class Quantification {
 	 * @param blocs
 	 * @param facteurQualite
 	 * @return
-	 * O(N^3)
+	 * O(N^3) via doTreatment
 	 */
 	public static int[][][][] dequantification(int [][][][] blocs, int facteurQualite) {
-		// Si facteur de qualite == 100 on passe .
+		return doTreatment(blocs, facteurQualite, true);
+	}
+	
+	/***
+	 * 
+	 * @param blocs
+	 * @param facteurQualite
+	 * @param dequantification
+	 * @return
+	 * O(N^3)
+	 */
+	private static int[][][][] doTreatment(int [][][][] blocs, int facteurQualite, boolean dequantification) {
+		// Si facteur de qualite de 100 on passe.
 		if (facteurQualite == 100) return blocs;
-		
+
 		int nbBlocs = blocs.length;
 		int height = blocs[0][Main.Y].length;
 		int width = blocs[0][Main.Y][0].length;
 		int[][][][] resultat = new int[nbBlocs][Main.COLOR_SPACE_SIZE][height][width];
 
+		int valueY = 0;
+		int valueCb = 0;
+		int valueCr = 0;
+		
 		for (int indexBloc = 0; indexBloc < nbBlocs; ++indexBloc) {
 			for (int u = 0; u < height; ++u) {
 				for (int v = 0; v < width; ++v) {
-					// TODO one function instead of 3 lines
 					double alpha = getAlphaValue(facteurQualite);
-					// TODO one function for both quantification / dequantification (same code basically).
-					resultat[indexBloc][Main.Y][u][v]  = (int) Math.round(blocs[indexBloc][Main.Y][u][v] * (alpha * TABLE_QY[u][v]));
-					resultat[indexBloc][Main.Cb][u][v] = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] * (alpha * TABLE_QCbCr[u][v]));
-					resultat[indexBloc][Main.Cr][u][v] = (int) Math.round(blocs[indexBloc][Main.Cr][u][v] * (alpha * TABLE_QCbCr[u][v]));
+					
+					if (!dequantification) {
+						valueY  = (int) Math.round(blocs[indexBloc][Main.Y][u][v]  / (alpha * TABLE_QY[u][v]));
+						valueCb = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] / (alpha * TABLE_QCbCr[u][v]));
+						valueCr = (int) Math.round(blocs[indexBloc][Main.Cr][u][v] / (alpha * TABLE_QCbCr[u][v]));
+					}
+					else {
+						valueY  = (int) Math.round(blocs[indexBloc][Main.Y][u][v]  * (alpha * TABLE_QY[u][v]));
+						valueCb = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] * (alpha * TABLE_QCbCr[u][v]));
+						valueCr = (int) Math.round(blocs[indexBloc][Main.Cr][u][v] * (alpha * TABLE_QCbCr[u][v]));
+					}
+					
+					resultat[indexBloc][Main.Y][u][v]  = valueY;
+					resultat[indexBloc][Main.Cb][u][v] = valueCb;
+					resultat[indexBloc][Main.Cr][u][v] = valueCr;
 				}
 			}
 		}
-		
+
 		return resultat;
 	}
 	
@@ -93,10 +104,8 @@ public class Quantification {
 	 * O(1)
 	 */
 	private static double getAlphaValue(int facteurQualite) {
-		// TODO ou ? conditionnel
 		double value = 0;
 		
-		// voir double dans equation , conversion explicite
 		if (facteurQualite >= 1 && facteurQualite <= 50) {
 			value = (double)(50 / facteurQualite);
 		}
@@ -106,7 +115,7 @@ public class Quantification {
 		}
 		else 
 		{
-			//erreur 
+			//TODO erreur
 		}
 		
 		return value;

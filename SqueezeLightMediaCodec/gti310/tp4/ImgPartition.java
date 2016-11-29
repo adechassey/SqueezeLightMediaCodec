@@ -7,7 +7,7 @@ package gti310.tp4;
  */
 public class ImgPartition {
 	/***
-	 * 
+	 * Partionner l'image pour obtenir des blocs 8x8
 	 * @param YCbCr
 	 * @return
 	 * O(N^3)
