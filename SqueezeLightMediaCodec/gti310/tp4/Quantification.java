@@ -1,5 +1,7 @@
 package gti310.tp4;
 
+import Model.ColorSpaceValues;
+
 /***
  * 
  * @author nero_
@@ -35,8 +37,8 @@ public class Quantification {
 	 * @return
 	 * O(N^3) via doTreatment
 	 */
-	public static int[][][][] applyQuantification(int [][][][] blocs, int facteurQualite) {
-		return doTreatment(blocs, facteurQualite, false);
+	public static void applyQuantification(ColorSpaceValues blocs, int facteurQualite) {
+		doTreatment(blocs, facteurQualite, false);
 	}
 
 	/***
@@ -46,8 +48,8 @@ public class Quantification {
 	 * @return
 	 * O(N^3) via doTreatment
 	 */
-	public static int[][][][] dequantification(int [][][][] blocs, int facteurQualite) {
-		return doTreatment(blocs, facteurQualite, true);
+	public static void dequantification(ColorSpaceValues blocs, int facteurQualite) {
+		doTreatment(blocs, facteurQualite, true);
 	}
 	
 	/***
@@ -58,15 +60,16 @@ public class Quantification {
 	 * @return
 	 * O(N^3)
 	 */
-	private static int[][][][] doTreatment(int [][][][] blocs, int facteurQualite, boolean dequantification) {
+	private static void doTreatment(ColorSpaceValues blocs, int facteurQualite, boolean dequantification) {
 		// Si facteur de qualite de 100 on passe.
-		if (facteurQualite == 100) return blocs;
+		if (facteurQualite == 100) return;
 
-		int nbBlocs = blocs.length;
-		int height = blocs[0][Main.Y].length;
-		int width = blocs[0][Main.Y][0].length;
-		int[][][][] resultat = new int[nbBlocs][Main.COLOR_SPACE_SIZE][height][width];
+		int nbBlocs = blocs.getNbBlocs();
+		int height = blocs.getblocHeight();
+		int width = blocs.getblocWidth();
 
+		int[][][][] resultat = new int[nbBlocs][blocs.getColorSpaces()][height][width];
+		
 		int valueY = 0;
 		int valueCb = 0;
 		int valueCr = 0;
@@ -76,14 +79,14 @@ public class Quantification {
 			for (int u = 0; u < height; ++u) {
 				for (int v = 0; v < width; ++v) {
 					if (!dequantification) {
-						valueY  = (int) Math.round(blocs[indexBloc][Main.Y][u][v]  / (alpha * TABLE_QY[u][v]));
-						valueCb = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] / (alpha * TABLE_QCbCr[u][v]));
-						valueCr = (int) Math.round(blocs[indexBloc][Main.Cr][u][v] / (alpha * TABLE_QCbCr[u][v]));
+						valueY  = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Y, u, v)  / (alpha * TABLE_QY[u][v]));
+						valueCb = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Cb, u, v) / (alpha * TABLE_QCbCr[u][v]));
+						valueCr = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Cr, u, v) / (alpha * TABLE_QCbCr[u][v]));
 					}
 					else {
-						valueY  = (int) Math.round(blocs[indexBloc][Main.Y][u][v]  * (alpha * TABLE_QY[u][v]));
-						valueCb = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] * (alpha * TABLE_QCbCr[u][v]));
-						valueCr = (int) Math.round(blocs[indexBloc][Main.Cr][u][v] * (alpha * TABLE_QCbCr[u][v]));
+						valueY  = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Y, u, v)  * (alpha * TABLE_QY[u][v]));
+						valueCb = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Cb, u, v) * (alpha * TABLE_QCbCr[u][v]));
+						valueCr = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Cr, u, v) * (alpha * TABLE_QCbCr[u][v]));
 					}
 					
 					resultat[indexBloc][Main.Y][u][v]  = valueY;
@@ -92,8 +95,8 @@ public class Quantification {
 				}
 			}
 		}
-
-		return resultat;
+		
+		blocs.setBlocsColorValues(resultat);
 	}
 	
 	/***

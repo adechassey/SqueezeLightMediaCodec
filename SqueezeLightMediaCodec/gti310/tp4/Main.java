@@ -108,42 +108,4 @@ public class Main {
 			System.err.println(ERRMSG_ARGS);
 		}
 	}
-
-	/***
-	 * Pour des fins de tests seulement. Pour TODO pdf du cours  avec facteur qualite 50. 
-	 * Attributation de valeurs de Y prédéterminer pour un bloc.
-	 * @param blocs
-	 * O(N^2)
-	 */
-	private static void applyPredeterminedTestBlocValues(int[][][][] blocs) {
-		int[][] bloc = new int[8][8];							
-		bloc[0][0] = 200;	bloc[1][0] = 200;	bloc[2][0] = 203;	bloc[3][0] = 200;	bloc[4][0] = 200;	bloc[5][0] = 200;	bloc[6][0] = 205;	bloc[7][0] = 210;
-		bloc[0][1] = 202;	bloc[1][1] = 203;	bloc[2][1] = 200;	bloc[3][1] = 200;	bloc[4][1] = 205;	bloc[5][1] = 200;	bloc[6][1] = 200;	bloc[7][1] = 200;
-		bloc[0][2] = 189;	bloc[1][2] = 198;	bloc[2][2] = 200;	bloc[3][2] = 200;	bloc[4][2] = 200;	bloc[5][2] = 200;	bloc[6][2] = 199;	bloc[7][2] = 200;
-		bloc[0][3] = 188;	bloc[1][3] = 188;	bloc[2][3] = 195;	bloc[3][3] = 200;	bloc[4][3] = 200;	bloc[5][3] = 200;	bloc[6][3] = 200;	bloc[7][3] = 200;
-		bloc[0][4] = 189;	bloc[1][4] = 189;	bloc[2][4] = 200;	bloc[3][4] = 197;	bloc[4][4] = 195;	bloc[5][4] = 200;	bloc[6][4] = 191;	bloc[7][4] = 188;
-		bloc[0][5] = 175;	bloc[1][5] = 182;	bloc[2][5] = 187;	bloc[3][5] = 187;	bloc[4][5] = 188;	bloc[5][5] = 190;	bloc[6][5] = 187;	bloc[7][5] = 185;
-		bloc[0][6] = 175;	bloc[1][6] = 178;	bloc[2][6] = 185;	bloc[3][6] = 187;	bloc[4][6] = 187;	bloc[5][6] = 187;	bloc[6][6] = 187;	bloc[7][6] = 187;
-		bloc[0][7] = 175;	bloc[1][7] = 175;	bloc[2][7] = 175;	bloc[3][7] = 187;	bloc[4][7] = 175;	bloc[5][7] = 175;	bloc[6][7] = 175;	bloc[7][7] = 186;
-
-		for (int i = 0; i < blocs[0][Main.Y].length; ++i )
-			for (int j = 0; j < blocs[0][Main.Y][0].length; ++j ) 
-				blocs[0][Main.Y][i][j] = bloc[i][j];
-	}
-
-	/***
-	 * Application du filtre gri sur l'ensemble des blocs pour la conservation des tons de gris seulement (canal Y).
-	 * @param les blocs
-	 * O(N^3)
-	 */
-	private static void applyGrayfilter(int[][][][] blocs) {
-		for (int i = 0; i < blocs.length; i++) {
-			for (int u = 0; u < blocs[i][Main.Cb].length; u++) {
-				for (int v = 0; v < blocs[i][Main.Cb][0].length; v++) {
-					blocs[i][Main.Cb][u][v] = 128;
-					blocs[i][Main.Cr][u][v] = 128;
-				}
-			}
-		}
-	}
 }

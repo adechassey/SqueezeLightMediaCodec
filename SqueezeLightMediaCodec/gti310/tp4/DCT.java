@@ -1,5 +1,7 @@
 package gti310.tp4;
 
+import Model.ColorSpaceValues;
+
 public class DCT {
 	/***
 	 * 
@@ -7,8 +9,8 @@ public class DCT {
 	 * @return bloc représentant F(u,v)
 	 * O(N^5) voir doTreatment
 	 */
-	public static int[][][][] applyDCT(int[][][][] blocs) {
-		return doTreatment(blocs, false);
+	public static void applyDCT(ColorSpaceValues blocs) {
+		doTreatment(blocs, false);
 	}
 	
 	/***
@@ -17,8 +19,8 @@ public class DCT {
 	 * @return
 	 * O(N^5) voir doTreatment
 	 */
-	public static int[][][][] inverseDCT(int[][][][] blocs) { 
-		return doTreatment(blocs, true);
+	public static void inverseDCT(ColorSpaceValues blocs) { 
+		doTreatment(blocs, true);
 	}
 	
 	/***
@@ -28,12 +30,12 @@ public class DCT {
 	 * @return
 	 * O(N^5)
 	 */
-	private static int[][][][] doTreatment(int[][][][] blocs, boolean inverseOperation) {
+	private static void doTreatment(ColorSpaceValues blocs, boolean inverseOperation) {
 		// TODO Const 8x8
-		int nbBlocs = blocs.length;
-		int height = blocs[0][Main.Y].length;
-		int width = blocs[0][Main.Y][0].length;
-		int[][][][] resultat = new int[nbBlocs][Main.COLOR_SPACE_SIZE][height][width];
+		int nbBlocs = blocs.getNbBlocs();
+		int height = blocs.getblocHeight();
+		int width = blocs.getblocWidth();
+		int[][][][] resultat = new int[nbBlocs][blocs.getColorSpaces()][height][width];
 		
 		double valeur_Y = 0;
 		double valeur_Cb = 0;
@@ -47,20 +49,15 @@ public class DCT {
 			
 					for(int i = 0; i < height; i++) {
 						for(int j = 0; j < width; j++) {
-							
-							if (indexBloc == 46) {
-								String ssss = "ssssss";
-							}
-							
 							if (!inverseOperation) {
-								valeur_Y += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs[indexBloc][Main.Y][i][j];
-								valeur_Cb += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs[indexBloc][Main.Cb][i][j];
-								valeur_Cr += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs[indexBloc][Main.Cr][i][j];
+								valeur_Y += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) *  blocs.getBlocColorValue(indexBloc, Main.Y, i, j);
+								valeur_Cb += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs.getBlocColorValue(indexBloc, Main.Cb, i, j);
+								valeur_Cr += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs.getBlocColorValue(indexBloc, Main.Cr, i, j);
 							}
 							else {
-								valeur_Y  += ((valeurCoefficient(i) * valeurCoefficient(j)) / 4) * Math.cos( ((2 * u + 1) * i * Math.PI) / 16) * Math.cos( ((2 * v + 1) * j * Math.PI) / 16 ) * blocs[indexBloc][Main.Y][i][j];
-								valeur_Cb += ((valeurCoefficient(i) * valeurCoefficient(j)) / 4) * Math.cos( ((2 * u + 1) * i * Math.PI) / 16) * Math.cos( ((2 * v + 1) * j * Math.PI) / 16 ) * blocs[indexBloc][Main.Cb][i][j];
-								valeur_Cr += ((valeurCoefficient(i) * valeurCoefficient(j)) / 4) * Math.cos( ((2 * u + 1) * i * Math.PI) / 16) * Math.cos( ((2 * v + 1) * j * Math.PI) / 16 ) * blocs[indexBloc][Main.Cr][i][j];
+								valeur_Y  += ((valeurCoefficient(i) * valeurCoefficient(j)) / 4) * Math.cos( ((2 * u + 1) * i * Math.PI) / 16) * Math.cos( ((2 * v + 1) * j * Math.PI) / 16 ) * blocs.getBlocColorValue(indexBloc, Main.Y, i, j);
+								valeur_Cb += ((valeurCoefficient(i) * valeurCoefficient(j)) / 4) * Math.cos( ((2 * u + 1) * i * Math.PI) / 16) * Math.cos( ((2 * v + 1) * j * Math.PI) / 16 ) * blocs.getBlocColorValue(indexBloc, Main.Cb, i, j);
+								valeur_Cr += ((valeurCoefficient(i) * valeurCoefficient(j)) / 4) * Math.cos( ((2 * u + 1) * i * Math.PI) / 16) * Math.cos( ((2 * v + 1) * j * Math.PI) / 16 ) * blocs.getBlocColorValue(indexBloc, Main.Cr, i, j);
 							}
 						}
 					}
@@ -82,7 +79,7 @@ public class DCT {
 			}
 		}
 		
-		return resultat;
+		blocs.setBlocsColorValues(resultat);
 	}
 	
 	/***
