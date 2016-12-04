@@ -5,3 +5,10 @@
 /SZLReaderWriter.class
 /convertColorSpace.class
 /ImgPartition.class
+/Quantification.class
+/ZigZag.class
+/DPCM.class
+/RLC.class
+/Decodeur.class
+/Encodeur.class
+/Validations.class

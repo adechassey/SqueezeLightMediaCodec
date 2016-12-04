@@ -31,11 +31,10 @@ public class DCT {
 	 * O(N^5)
 	 */
 	private static void doTreatment(ColorSpaceValues blocs, boolean inverseOperation) {
-		// TODO Const 8x8
 		int nbBlocs = blocs.getNbBlocs();
 		int height = blocs.getblocHeight();
 		int width = blocs.getblocWidth();
-		int[][][][] resultat = new int[nbBlocs][blocs.getColorSpaces()][height][width];
+		int[][][] valeursBloc = new int[blocs.getColorSpaces()][height][width];
 		
 		double valeur_Y = 0;
 		double valeur_Cb = 0;
@@ -68,18 +67,22 @@ public class DCT {
 						valeur_Cr *= ((valeurCoefficient(u) * valeurCoefficient(v)) / 4);
 					}
 					
-					resultat[indexBloc][Main.Y][u][v] = (int)Math.round (valeur_Y);
-					resultat[indexBloc][Main.Cb][u][v] = (int)Math.round (valeur_Cb);
-					resultat[indexBloc][Main.Cr][u][v] = (int)Math.round (valeur_Cr);
+					valeursBloc[Main.Y][u][v] = (int)Math.round (valeur_Y);
+					valeursBloc[Main.Cb][u][v] = (int)Math.round (valeur_Cb);
+					valeursBloc[Main.Cr][u][v] = (int)Math.round (valeur_Cr);
 					
 					valeur_Y = 0;
 					valeur_Cb = 0;
 					valeur_Cr = 0;
 				}
 			}
+			
+			// On affecte les valeurs DCT/iDCT pour le bloc courrant.
+			blocs.setBlocSpaceColorValues(indexBloc, Main.Y, valeursBloc[Main.Y]);
+			blocs.setBlocSpaceColorValues(indexBloc, Main.Cb, valeursBloc[Main.Cb]);
+			blocs.setBlocSpaceColorValues(indexBloc, Main.Cr, valeursBloc[Main.Cr]);
+			valeursBloc = new int[blocs.getColorSpaces()][height][width];
 		}
-		
-		blocs.setBlocsColorValues(resultat);
 	}
 	
 	/***

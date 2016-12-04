@@ -68,7 +68,7 @@ public class Quantification {
 		int height = blocs.getblocHeight();
 		int width = blocs.getblocWidth();
 
-		int[][][][] resultat = new int[nbBlocs][blocs.getColorSpaces()][height][width];
+		int[][][] valeursBloc = new int[blocs.getColorSpaces()][height][width];
 		
 		int valueY = 0;
 		int valueCb = 0;
@@ -89,14 +89,18 @@ public class Quantification {
 						valueCr = (int) Math.round(blocs.getBlocColorValue(indexBloc, Main.Cr, u, v) * (alpha * TABLE_QCbCr[u][v]));
 					}
 					
-					resultat[indexBloc][Main.Y][u][v]  = valueY;
-					resultat[indexBloc][Main.Cb][u][v] = valueCb;
-					resultat[indexBloc][Main.Cr][u][v] = valueCr;
+					valeursBloc[Main.Y][u][v]  = valueY;
+					valeursBloc[Main.Cb][u][v] = valueCb;
+					valeursBloc[Main.Cr][u][v] = valueCr;
 				}
 			}
+			
+			// On affecte les valeurs DCT/iDCT pour le bloc courrant.
+			blocs.setBlocSpaceColorValues(indexBloc, Main.Y, valeursBloc[Main.Y]);
+			blocs.setBlocSpaceColorValues(indexBloc, Main.Cb, valeursBloc[Main.Cb]);
+			blocs.setBlocSpaceColorValues(indexBloc, Main.Cr, valeursBloc[Main.Cr]);
+			valeursBloc = new int[blocs.getColorSpaces()][height][width];
 		}
-		
-		blocs.setBlocsColorValues(resultat);
 	}
 	
 	/***
