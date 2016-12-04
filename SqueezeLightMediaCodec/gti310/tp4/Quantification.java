@@ -70,12 +70,11 @@ public class Quantification {
 		int valueY = 0;
 		int valueCb = 0;
 		int valueCr = 0;
+		double alpha = getAlphaValue(facteurQualite);
 		
 		for (int indexBloc = 0; indexBloc < nbBlocs; ++indexBloc) {
 			for (int u = 0; u < height; ++u) {
 				for (int v = 0; v < width; ++v) {
-					double alpha = getAlphaValue(facteurQualite);
-					
 					if (!dequantification) {
 						valueY  = (int) Math.round(blocs[indexBloc][Main.Y][u][v]  / (alpha * TABLE_QY[u][v]));
 						valueCb = (int) Math.round(blocs[indexBloc][Main.Cb][u][v] / (alpha * TABLE_QCbCr[u][v]));

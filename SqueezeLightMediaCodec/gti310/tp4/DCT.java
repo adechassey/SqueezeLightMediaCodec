@@ -48,6 +48,10 @@ public class DCT {
 					for(int i = 0; i < height; i++) {
 						for(int j = 0; j < width; j++) {
 							
+							if (indexBloc == 46) {
+								String ssss = "ssssss";
+							}
+							
 							if (!inverseOperation) {
 								valeur_Y += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs[indexBloc][Main.Y][i][j];
 								valeur_Cb += Math.cos( ((2 * i + 1) * u * Math.PI) / 16) * Math.cos( ((2 * j + 1) * v * Math.PI) / 16 ) * blocs[indexBloc][Main.Cb][i][j];

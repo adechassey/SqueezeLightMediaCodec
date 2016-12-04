@@ -403,9 +403,8 @@ public class Entropy {
 				if(runlength <= 15) {
 					/* create bit value */
 					int binary = pair[1];
-					if (pair[0] > 10) pair[0] = 10; // correction pour facteur qualite 98, 99, (lena) ca plante sinon...
+					if (pair[0] > 10) pair[0] = 10; // correction pour facteur qualite 98, 99...
 					binary |= HUFFMAN_AC[AMPLITUDE][runlength][pair[0]-1] << pair[0];
-					
 					/* write the value to the buffer */
 					write(binary, pair[0] + HUFFMAN_AC[SIZE][runlength][pair[0]-1]);
 				} else {

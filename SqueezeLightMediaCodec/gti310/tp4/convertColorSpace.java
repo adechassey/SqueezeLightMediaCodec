@@ -15,8 +15,6 @@ public class convertColorSpace {
 	 * O(N^2)
 	 */
 	public static int[][][] convertRGBtoYCbCr(int[][][] rgb) {
-		//rgb = new int[Main.COLOR_SPACE_SIZE][1][1]; rgb[Main.R][0][0] = 222; rgb[Main.G][0][0] = 133; rgb[Main.B][0][0] = 108;
-		// ou bien float[][][] ou lieu de int , a voir.
  		int[][][] YCbCr = new int[Main.COLOR_SPACE_SIZE][rgb[0].length][rgb[0][0].length];
 		
 		int height = rgb[Main.R].length;
@@ -27,24 +25,18 @@ public class convertColorSpace {
 		
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				// TODO 4:2:0  ??
 				R = rgb[Main.R][i][j];
 				G = rgb[Main.G][i][j];
 				B = rgb[Main.B][i][j];
 
+				// TODO mentionne norme de la formule.
+				// TODO mentionne rapport maintenir double vs int  , perte de precision. le reste des operations decouleur des valeurs sur les couleurs/
 				YCbCr[Main.Y][i][j]  = (int) Math.min(Math.max(0, Math.round(0.299 * R + 0.587 * G + 0.114 * B)), 255);
 				YCbCr[Main.Cb][i][j] = (int) Math.min(Math.max(0, Math.round(-0.1687 * R + (-0.3313 * G) + 0.5 * B + 128 )), 255);
 				YCbCr[Main.Cr][i][j] = (int) Math.min(Math.max(0, Math.round(0.5 * R + (-0.4187 * G) + (-0.0813 * B + 128) )), 255);
 			}
 		}
 		
-		// 4:2:0 -> nearest neighbor approach http://stackoverflow.com/questions/13714232/yuv-image-processing
-		// Y = image[ y * w + x];
-		// U = image[ w * h + floor(y/2) * (w/2) + floor(x/2) + 1]
-		// V = image[ w * h + floor(y/2) * (w/2) + floor(x/2) + 0]
-		// 
-		// autre info : http://www.forejune.co/jvcompress/chap5.pdf
-		// ref git : https://github.com/banctilrobitaille/Convertisseur_QuasiJPEG/blob/master/ColorSpaceConverter/YCBCRConverter.java
 		return YCbCr;
 	}
 	

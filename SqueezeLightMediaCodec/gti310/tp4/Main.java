@@ -6,8 +6,8 @@ Projet: Laboratoire #4
 Étudiant(e)s: Manuel Nero, Antoine de Chassey 
               
 Professeur : Francis Cardinal
-Nom du fichier: [xxxxxx]
-Date créé: 2016-11-16
+Nom du fichier: SqueezeLightMediaCodec
+Date créé: 2016-12-07
 *******************************************************/   
 package gti310.tp4;
 
@@ -47,6 +47,22 @@ public class Main {
 	public static final int Cb = 1;
 	public static final int Cr = 2;
 	
+	/*
+	 * File type extensions
+	 */
+	public static final String IMAGE_FILE_EXTENSION = ".ppm";
+	public static final String COMPRESSED_FILE_EXTENSION = ".szl";
+	
+	/*
+	 * Liste des messages d'erreur et de validation
+	 */
+	private final static String ERRMSG_FACTEUR_QUALITE_VALUERANGE = "Le facteur de qualité doit être une valeur numérique comprisse entre 1 (pire qualité) et 100 (meilleur qualité).";
+	private final static String ERRMSG_ARGS = "Le nombre d'arguments passés au programme est insuffisant.\n" + 
+											  String.format("Encodage fichier image %s vers %s : <Nom de fichier en entrée> <Nom de fichier en sortie> <Facteur de qualité entre 1 et 100>.\n", 
+											  IMAGE_FILE_EXTENSION, COMPRESSED_FILE_EXTENSION) +
+											  String.format("Décodage fichier image %s vers %s : <Nom de fichier compressé> <Nom de fichier en sortie>", 
+											  COMPRESSED_FILE_EXTENSION, IMAGE_FILE_EXTENSION);
+	
 	/**
 	 * The application's entry point.
 	 * 
@@ -55,119 +71,46 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Squeeze Light Media Codec !");
-		
-		// TODO : try catch
-		if (args.length == 3) {
+	
+		if (args.length >= 3) {
+			// Point d'entrée pour l'encodage.
 			System.out.println("Encoding started...");
-			// Point d'entrée pour l'encodage
-			String fileToEncode = args[0].trim();
-			String compressFileName = args[1].trim();
-			int facteurQualite = Integer.parseInt(args[2].trim());
 			
-			int[][][] rgb = PPMReaderWriter.readPPMFile(fileToEncode);
-			
-			// Conversion RGB à YCbCr
-			int[][][] YCbCr = convertColorSpace.convertRGBtoYCbCr(rgb);
-			
-			// TODO conserver attributs hauteur , largeur a un endroit accessible, on y accede assez souvent a cette info.
-			int height = YCbCr[Main.Y].length;
-			int width = YCbCr[Main.Y][0].length;
-			
-			// Obtenir blocs [BLOCK_SIZE][BLOCK_SIZE]
-			int[][][][] blocs = ImgPartition.partitionImage(YCbCr);
-			
-			// Lignes suivantes en commentaires à des fins de tests uniquement.
-			//applyGrayfilter(blocs);
-			//applyPredeterminedTestBlocValues(blocs);
-
-			// DCT
-			int[][][][] blocsDCT = DCT.applyDCT(blocs);
-		    
-			// Quantification
-			int[][][][] quantified = Quantification.applyQuantification(blocsDCT, facteurQualite);
-			
-			// Zigzag
-			int[][][] zigzag = new int[quantified.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE * Main.BLOCK_SIZE]; 
-			for (int i = 0; i < quantified.length; i++) {
-				zigzag[i][Main.Y] = ZigZag.doZipZag(quantified[i][Main.Y]);
-				zigzag[i][Main.Cb] = ZigZag.doZipZag(quantified[i][Main.Cb]);
-				zigzag[i][Main.Cr] = ZigZag.doZipZag(quantified[i][Main.Cr]);
+			if (!Validations.facteurQualiteEstValide(args[2].trim()))
+			{
+				System.err.println(ERRMSG_FACTEUR_QUALITE_VALUERANGE);
+				System.exit(1);
 			}
+					
+			String imgFileName = Validations.validerNomFichierExtension(args[0].trim(), Main.IMAGE_FILE_EXTENSION);
+			String outputFileName = Validations.validerNomFichierExtension(args[1].trim(), Main.COMPRESSED_FILE_EXTENSION);
 			
-			// Prepare stream for DPCM, RLC operation 
-			Entropy.loadBitstream(Entropy.getBitstream());
+			Encodeur encodeur = new Encodeur(imgFileName, outputFileName, Integer.parseInt(args[2].trim()) );
 			
-			// DC
-			DPCM.applyDPCM(zigzag);
-	
-			// AC
-			RLC.applyRLC(zigzag);
-
-			// Write to output file.
-			SZLReaderWriter.writeSZLFile(compressFileName, height, width, facteurQualite);
-			
-			// END 
-	
-			// ------------------------------------------------------------
-			// ------------------------------------------------------------
-			
-			// Decompress operation START
-			int[] szlBitStream = SZLReaderWriter.readSZLFile(compressFileName);
-			height = szlBitStream[0];
-			width = szlBitStream[1];
-			int colorSpace = szlBitStream[2];
-			int qualityFactor = szlBitStream[3];
-		
-			// TODO Validation des infos.
-		
-			// iDC		
-			int[][][] toZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE * Main.BLOCK_SIZE];
-			DPCM.inverseDPCM(toZigzag);
-			
-			// iAC
-			RLC.inverseRLC(toZigzag);
-			
-			// iZigzag
-			int[][][][] deZigzag = new int[zigzag.length][Main.COLOR_SPACE_SIZE][Main.BLOCK_SIZE][Main.BLOCK_SIZE]; 
-			for (int i = 0; i < zigzag.length; i++) {
-				deZigzag[i][Main.Y] =  ZigZag.inverseZipZag(zigzag[i][Main.Y]);
-				deZigzag[i][Main.Cb] = ZigZag.inverseZipZag(zigzag[i][Main.Cb]);
-				deZigzag[i][Main.Cr] = ZigZag.inverseZipZag(zigzag[i][Main.Cr]);
+			if (encodeur.encoder()) {
+				System.out.println("Encodage terminé !");
 			}
-		
-			// Dequantification
-			int[][][][] dequantified = Quantification.dequantification(quantified, facteurQualite);
-			
-			// iDCT
-			int[][][][] blocsConvertFromDCT = DCT.inverseDCT(dequantified);
-			
-			// Reconstruire image entiere a partir des blocs
-			int[][][] blocsV2 = ImgPartition.mergeImageFromBlocs(blocsConvertFromDCT, height, width);
-	
-			// Conversion YCbCr à RBG
-			int[][][] rgbFromYCBCr = convertColorSpace.convertYCbCrToRGB(blocsV2);
-				
-			// TODO output println des etapes "completed"... 	
-			PPMReaderWriter.writePPMFile(compressFileName + facteurQualite + ".ppm", rgbFromYCBCr);
-
-			System.out.println("Encoding completed...");
 			
 		}
 		else if (args.length == 2) {
+			// Point d'entrée pour le décodage.
 			System.out.println("Decoding started...");
-			// Point d'entrée pour le décodage
-
-			System.out.println("Decoding completed...");
+		
+			String fileToDecode =   Validations.validerNomFichierExtension(args[0].trim(), Main.COMPRESSED_FILE_EXTENSION);
+			String outputFileName = Validations.validerNomFichierExtension(args[1].trim(), Main.IMAGE_FILE_EXTENSION);
+			
+			Decodeur decodeur = new Decodeur(fileToDecode, outputFileName);
+			if (decodeur.decoder()) {
+				System.out.println("Décodage terminé !");
+			}
 		}
 		else { 
-			System.err.println("erreur lecture args");
+			System.err.println(ERRMSG_ARGS);
 		}
-		
-			
 	}
 
 	/***
-	 * Pour des fins de tests seulement.
+	 * Pour des fins de tests seulement. Pour TODO pdf du cours  avec facteur qualite 50. 
 	 * Attributation de valeurs de Y prédéterminer pour un bloc.
 	 * @param blocs
 	 * O(N^2)

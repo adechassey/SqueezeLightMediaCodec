@@ -3,7 +3,7 @@ package gti310.tp4;
 public class ZigZag {
 	/***
 	 * 
-	 * Code emprunté et adapté de : https://rosettacode.org/wiki/Zig-zag_matrix#Java
+	 * 
 	 * @param blocs
 	 * @return
 	 * O(N) via doTreatment
@@ -35,7 +35,7 @@ public class ZigZag {
 	}
 	
 	/***
-	 * 
+	 * Code emprunté et adapté de : https://rosettacode.org/wiki/Zig-zag_matrix#Java
 	 * @param vecteur
 	 * @param blocs
 	 * @param inverseOperation

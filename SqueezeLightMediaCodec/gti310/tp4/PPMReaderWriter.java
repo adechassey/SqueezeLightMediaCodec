@@ -146,7 +146,9 @@ public class PPMReaderWriter {
 	 * @param filename
 	 * @param image
 	 */
-	public static void writePPMFile(String filename, int[][][] image) {
+	public static boolean writePPMFile(String filename, int[][][] image) {
+		boolean operationCompleted = false;
+		
 		try {
 			/* open a new file: overwrite it if it exists */
 			DataOutputStream out = new DataOutputStream(
@@ -189,11 +191,14 @@ public class PPMReaderWriter {
 			
 			/* close the file handler */
 			out.close();
+			operationCompleted = true;
 		} catch (IOException e) {
 			/*
-			 * something went wrong while writting the file...
+			 * something went wrong while writing the file...
 			 */
 			System.err.println(e.getMessage());
 		}
+		
+		return operationCompleted;
 	}
 }
