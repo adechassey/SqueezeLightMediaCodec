@@ -29,9 +29,9 @@ public class convertColorSpace {
 				G = rgb.getColorValue(Main.G, i, j);
 				B = rgb.getColorValue(Main.B, i, j);
 
-				rgb.setColorValue(Main.R, i, j, (int) Math.min(Math.max(0, Math.round(0.299 * R + 0.587 * G + 0.114 * B)), 255));
-				rgb.setColorValue(Main.G, i, j, (int) Math.min(Math.max(0, Math.round(-0.1687 * R + (-0.3313 * G) + 0.5 * B + 128 )), 255));
-				rgb.setColorValue(Main.B, i, j, (int) Math.min(Math.max(0, Math.round(0.5 * R + (-0.4187 * G) + (-0.0813 * B + 128) )), 255));
+				rgb.setColorValue(Main.Y, i, j, (int) Math.min(Math.max(0, Math.round(0.299 * R + 0.587 * G + 0.114 * B)), 255));
+				rgb.setColorValue(Main.Cb, i, j, (int) Math.min(Math.max(0, Math.round(-0.1687 * R + (-0.3313 * G) + 0.5 * B + 128 )), 255));
+				rgb.setColorValue(Main.Cr, i, j, (int) Math.min(Math.max(0, Math.round(0.5 * R + (-0.4187 * G) + (-0.0813 * B + 128) )), 255));
 			}
 		}
 	}
