@@ -3,9 +3,8 @@ package gti310.tp4;
 import Model.ColorSpaceValues;
 
 /***
- * 
- * @author nero_
- *
+ * Classe utilisée pour les opérations de quantification et déquantification
+ * @author Manuel Nero, Antoine de Chassey
  */
 public class Quantification {
 	public static final int[][] TABLE_QY = {
@@ -31,10 +30,9 @@ public class Quantification {
 	};
 
 	/***
-	 * 
-	 * @param blocs
-	 * @param facteurQualite
-	 * @return
+	 * Appelle doTreatment pour exécuter une quantification.
+	 * @param blocs L'instance contenant les valeurs sur les espaces couleurs.
+	 * @param facteurQualite Le facteur de qualité
 	 * O(N^3) via doTreatment
 	 */
 	public static void applyQuantification(ColorSpaceValues blocs, int facteurQualite) {
@@ -42,10 +40,9 @@ public class Quantification {
 	}
 
 	/***
-	 * 
-	 * @param blocs
-	 * @param facteurQualite
-	 * @return
+	 * Appelle doTreatment pour exécuter une déquantification.
+	 * @param blocs L'instance contenant les valeurs sur les espaces couleurs.
+	 * @param facteurQualite Le facteur de qualité
 	 * O(N^3) via doTreatment
 	 */
 	public static void dequantification(ColorSpaceValues blocs, int facteurQualite) {
@@ -53,10 +50,10 @@ public class Quantification {
 	}
 	
 	/***
-	 * 
-	 * @param blocs
-	 * @param facteurQualite
-	 * @param dequantification
+	 * Exécute l'opération de quantification/déquantification.
+	 * @param blocs L'instance contenant les valeurs sur les espaces couleurs.
+	 * @param facteurQualite Le facteur de qualité
+	 * @param dequantification Indique si on procède à une opération de déquantification.
 	 * @return
 	 * O(N^3)
 	 */
@@ -95,7 +92,7 @@ public class Quantification {
 				}
 			}
 			
-			// On affecte les valeurs DCT/iDCT pour le bloc courrant.
+			// On affecte les valeurs DCT/iDCT pour le bloc courant.
 			blocs.setBlocSpaceColorValues(indexBloc, Main.Y, valeursBloc[Main.Y]);
 			blocs.setBlocSpaceColorValues(indexBloc, Main.Cb, valeursBloc[Main.Cb]);
 			blocs.setBlocSpaceColorValues(indexBloc, Main.Cr, valeursBloc[Main.Cr]);
@@ -104,9 +101,9 @@ public class Quantification {
 	}
 	
 	/***
-	 * 
-	 * @param facteurQualite
-	 * @return
+	 * Calcul de la valeur alpha.
+	 * @param facteurQualite Le facteur de qualité.
+	 * @return La valeur alpha. 
 	 * O(1)
 	 */
 	private static double getAlphaValue(int facteurQualite) {
@@ -118,10 +115,6 @@ public class Quantification {
 		else if (facteurQualite <= 99)
 		{
 			value = (double)(200 - 2 * facteurQualite) / 100;
-		}
-		else 
-		{
-			//TODO erreur
 		}
 		
 		return value;

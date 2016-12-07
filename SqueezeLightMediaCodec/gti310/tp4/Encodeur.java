@@ -4,7 +4,7 @@ import Model.ColorSpaceValues;
 
 /**
  * Classe utilisée pour encoder/compresser un fichier image selon un facteur de qualité.
- * @author 
+ * @author Manuel Nero, Antoine de Chassey
  */
 public class Encodeur {
 	private String fileNameImage; 		// Le nom du fichier image.
@@ -27,7 +27,7 @@ public class Encodeur {
 
 	/**
 	 * Encodage d'un fichier image selon le facteur de qualité.
-	 * O(?)
+	 * O(N^5)
 	 */
 	public boolean encoder() {
 		boolean operationCompleted = false;

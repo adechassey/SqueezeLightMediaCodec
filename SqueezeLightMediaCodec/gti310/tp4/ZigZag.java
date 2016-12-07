@@ -1,28 +1,29 @@
 package gti310.tp4;
 
+/***
+ * Classe qui s'occupe de l'opération zigzag/dezigzag sur un bloc.
+ * @author Manuel Nero, Antoine de Chassey
+ */
 public class ZigZag {
 	/***
-	 * 
-	 * 
-	 * @param blocs
-	 * @return
+	 * Appelle doTreatment pour exécuter l'opération de zigzag sur un bloc.
+	 * @param bloc Valeurs du bloc.
+	 * @return le train de bit du bloc.
 	 * O(N) via doTreatment
 	 */
-	public static int[] doZipZag(int [][] blocs) {
-		// TODO return null pour les autres fonctions.
-		// code: https://algorithm.yuanbin.me/zh-hans/problem_misc/matrix_zigzag_traversal.html
-		if (blocs == null || blocs.length == 0) return null;
+	public static int[] doZipZag(int [][] bloc) {
+		if (bloc == null || bloc.length == 0) return null;
 		int[] resultat = new int[Main.BLOCK_SIZE * Main.BLOCK_SIZE];
         
-		doTreatment(resultat, blocs, false);
+		doTreatment(resultat, bloc, false);
 
 		return resultat;
 	}
 	
 	/***
-	 * 
-	 * @param vecteur
-	 * @return
+	 * Appelle doTreatment pour exécuter l'opération de dezigzag sur un bloc.
+	 * @param vecteur le train de bit du bloc.
+	 * @return Valeurs du bloc.
 	 * O(N) via doTreatment
 	 */
 	public static int[][] inverseZipZag(int [] vecteur) {
@@ -35,22 +36,23 @@ public class ZigZag {
 	}
 	
 	/***
+	 * Exécute l'opération de zigzag/dezigzag.
 	 * Code emprunté et adapté de : https://rosettacode.org/wiki/Zig-zag_matrix#Java
-	 * @param vecteur
-	 * @param blocs
-	 * @param inverseOperation
+	 * @param vecteur vecteur le train de bit du bloc.
+	 * @param bloc Valeurs du bloc.
+	 * @param inverseOperation Indique si il s'agit d'une operation dezigzag. Operation zigzag dans le cas contraire.
 	 * O(N)
 	 */
-	private static void doTreatment(int [] vecteur, int [][] blocs, boolean inverseOperation) {
+	private static void doTreatment(int [] vecteur, int [][] bloc, boolean inverseOperation) {
         int linePos = 1;
         int colPos = 1;
         
         for (int element = 0; element < Main.BLOCK_SIZE * Main.BLOCK_SIZE; element++)
         {
         	if (!inverseOperation) 
-        		vecteur[element] = blocs[linePos - 1][colPos - 1];
+        		vecteur[element] = bloc[linePos - 1][colPos - 1];
         	else 
-        		blocs[linePos - 1][colPos - 1] = vecteur[element];
+        		bloc[linePos - 1][colPos - 1] = vecteur[element];
 
         	// On détermine si la position se situe dans une bande paire ou impair.
         	if ((linePos + colPos) % 2 == 0)

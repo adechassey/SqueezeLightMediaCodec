@@ -2,11 +2,14 @@ package gti310.tp4;
 
 import Model.ColorSpaceValues;
 
+/***
+ * Classe qui s'occupe du traitement DCT et iDCT.
+ * @author Manuel Nero, Antoine de Chassey
+ */
 public class DCT {
 	/***
-	 * 
-	 * @param bloc Représente f(i,j)
-	 * @return bloc représentant F(u,v)
+	 * S'occupe d'appeller la fonction doTreatment pour exécuter l'opération DCT.
+	 * @param blocs Représente f(i,j), l'instance contenant les valeurs sur les espaces couleurs.
 	 * O(N^5) voir doTreatment
 	 */
 	public static void applyDCT(ColorSpaceValues blocs) {
@@ -14,9 +17,8 @@ public class DCT {
 	}
 	
 	/***
-	 * 
-	 * @param blocs
-	 * @return
+	 * S'occupe d'appeller la fonction doTreatment pour exécuter l'opération iDCT.
+	 * @param blocs Représente F(u,v), l'instance contenant les valeurs sur les espaces couleurs.
 	 * O(N^5) voir doTreatment
 	 */
 	public static void inverseDCT(ColorSpaceValues blocs) { 
@@ -24,10 +26,9 @@ public class DCT {
 	}
 	
 	/***
-	 * 
-	 * @param blocs
-	 * @param inverseOperation
-	 * @return
+	 * S'occupe d'exécuter le traitement DCT ou iDCT.
+	 * @param blocs Représente f(i,j), l'instance contenant les valeurs sur les espaces couleurs.
+	 * @param inverseOperation Indique si on application l'opération DCT ou iDCT.
 	 * O(N^5)
 	 */
 	private static void doTreatment(ColorSpaceValues blocs, boolean inverseOperation) {
@@ -41,7 +42,7 @@ public class DCT {
 		double valeur_Cr = 0;
 		
 		// Dans le cas d'un traitement inverse, en se référant à l'énoncé de laboratoire l'index u est représenté par i et v par j, vice-versa. 
-		// On conserve la même notation pour les index que la transformer DCT pour regrouper les deux opération (DCT et iDCT) à l'intérieur de cette même fonction.
+		// On conserve la même notation pour les index que la transformer DCT en regroupant les deux opération (DCT et iDCT) à l'intérieur de cette même fonction.
 		for (int indexBloc = 0; indexBloc < nbBlocs; ++indexBloc) {
 			for(int u = 0; u < height; u++) {
 				for(int v = 0; v < width; v++) {
@@ -77,7 +78,7 @@ public class DCT {
 				}
 			}
 			
-			// On affecte les valeurs DCT/iDCT pour le bloc courrant.
+			// On affecte les valeurs DCT/iDCT pour le bloc courrant en évitant de créer un tableau temporaire pour contenir les valeurs.
 			blocs.setBlocSpaceColorValues(indexBloc, Main.Y, valeursBloc[Main.Y]);
 			blocs.setBlocSpaceColorValues(indexBloc, Main.Cb, valeursBloc[Main.Cb]);
 			blocs.setBlocSpaceColorValues(indexBloc, Main.Cr, valeursBloc[Main.Cr]);
@@ -86,9 +87,9 @@ public class DCT {
 	}
 	
 	/***
-	 * 
-	 * @param indexUV
-	 * @return
+	 * Obtenir la valeur du coefficient.
+	 * @param indexUV La position de l'index U ou V.
+	 * @return La valeur du coefficient.
 	 * O(1)
 	 */
 	private static double valeurCoefficient(int indexUV) {

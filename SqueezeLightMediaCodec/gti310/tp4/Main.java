@@ -67,11 +67,11 @@ public class Main {
 	 * The application's entry point.
 	 * 
 	 * @param args
-	 * O(?)
+	 * O(N^5)
 	 */
 	public static void main(String[] args) {
 		System.out.println("Squeeze Light Media Codec !");
-	
+		
 		if (args.length >= 3) {
 			// Point d'entrée pour l'encodage.
 			System.out.println("Encoding started...");

@@ -3,15 +3,13 @@ package gti310.tp4;
 import Model.ColorSpaceValues;
 
 /***
- * 
- * @author 
- *
+ * Classe qui s'occupe de partionner une image en blocs ou bien de reconstruire une image à partir de blocs.
+ * @author Manuel Nero, Antoine de Chassey
  */
 public class ImgPartition {
 	/***
-	 * Partionner l'image pour obtenir des blocs 8x8
-	 * @param YCbCr
-	 * @return
+	 * Partionner l'image pour obtenir des blocs.
+	 * @param YCbCr L'instance contenant les valeurs sur les espaces couleurs.
 	 * O(N^3)
 	 */
 	public static void partitionImage(ColorSpaceValues YCbCr) {
@@ -21,6 +19,11 @@ public class ImgPartition {
 	
 	/*
 	 * 
+	 * 
+	 */
+	/***
+	 * Reconstruire une image à partir de blocs.
+	 * @param YCbCr L'instance contenant les valeurs sur les espaces couleurs.
 	 * O(N^3)
 	 */
 	public static void mergeImageFromBlocs(ColorSpaceValues YCbCr) {
@@ -28,11 +31,13 @@ public class ImgPartition {
 		doTreatments(YCbCr, false);
 	}
 	
-	/*
+	/***
+	 * Partionner / reconstruit une image.
+	 * @param csv L'instance contenant les valeurs sur les espaces couleurs.
+	 * @param isPartitionOperation Indique si on partionne/reconstruit une image.
 	 * O(N^3)
 	 */
 	private static void doTreatments(ColorSpaceValues csv, boolean isPartitionOperation) {
-		// TODO rapport fin de TEST : Nous avons creer les partitions de l'image en images separer pour analyser le resultat.
 		int nbBlocParLignes = csv.getImgWidth() / Main.BLOCK_SIZE;
 		int nbBlocParColonnes = csv.getImgHeight() / Main.BLOCK_SIZE;
 		int nbTotalBlocs = nbBlocParLignes * nbBlocParColonnes;

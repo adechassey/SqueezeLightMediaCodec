@@ -4,7 +4,7 @@ import Model.ColorSpaceValues;
 
 /**
  * Classe utilisée pour décoder/decompresser un fichier image selon un facteur de qualité.
- * @author 
+ * @author Manuel Nero, Antoine de Chassey
  */
 public class Decodeur {
 	private String fileNameImage; 		// Le nom du fichier image.
@@ -27,7 +27,7 @@ public class Decodeur {
 	 * Décoder un fichier image selon le facteur de qualité obtenu lors de la lecteur du fichier image compressé.
 	 * @param intputFile Le fichier .szl en entré
 	 * @param outputFile Le fichier .ppm qui sera créer en sortie
-	 * O(?)
+	 * O(N^5)
 	 */
 	public boolean decoder () {
 		boolean operationCompleted = false;
@@ -60,7 +60,7 @@ public class Decodeur {
 			
 			// iAC
 			System.out.println("Obtenir les AC.");
-			RLC.inverseRLC(oColorValues.getColorValues());
+			RLC.inverseRLC(oColorValues.getColorValues()); 
 			
 			// iZigzag
 			System.out.println("Inverse opération Zigzag.");

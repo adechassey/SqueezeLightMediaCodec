@@ -2,21 +2,19 @@ package gti310.tp4;
 
 /**
  * Classe utilitaire qui s'occupe de validation des informations passer comme arguments au programme et s'occupe de modifier ceux ci pour 
- * qu'ils soient conforme si il y a lieu.
+ * qu'ils soient conforme au besoin.
  * @author 
  *
  */
 public class Validations {
 	private final static int FACTEUR_QUALITE_MINVALUE = 1;
-	private final static int FACTEUR_QUALITE_MAXVALUE = 1000;
+	private final static int FACTEUR_QUALITE_MAXVALUE = 100;
 
-	/*
-	 * O(1)
-	 */
 	/***
 	 * Indique si le facteur de qualité est valide.
 	 * @param facteurQualite La valeur du facteur de qualité.
 	 * @return valide ou non.
+	 * O(1)
 	 */
 	public static boolean facteurQualiteEstValide(String facteurQualite) {
 		boolean estValide = true;
@@ -33,20 +31,18 @@ public class Validations {
 		return estValide;
 	}
 
-	/*
-	 * O(1)
-	 */
 	/***
 	 * Indique si le facteur de qualité est compris dans un intervalle numérique.
 	 * @param facteurQualite La valeur pour le facteur de qualité
 	 * @return Si le facteur de qualité est dans l'intervalle numérique spécifié.
+	 * O(1)
 	 */
 	public static boolean facteurQualiteEstValide(int facteurQualite) {
 		return !(facteurQualite < FACTEUR_QUALITE_MINVALUE || facteurQualite > FACTEUR_QUALITE_MAXVALUE);
 	}
 
 	/***
-	 * Vérifie qu'un fichier comporte bien l'extension spécifié sinon l'ajoute.
+	 * Vérifie qu'un fichier comporte bien l'extension spécifié sinon on l'ajoute.
 	 * @param fileName Le nom du fichier
 	 * @param ext l'extension du fichier
 	 * @return Le nom du fichier avec son extension.
